@@ -1,6 +1,7 @@
 package material_model
 
 import (
+	"github.com/yueqing2617/XFLY/pkg/utils"
 	"github.com/yueqing2617/XFLY/service/db"
 	"xorm.io/xorm"
 )
@@ -58,4 +59,36 @@ func listToTree(data []MaterialType, parentId int64) []MaterialType {
 		}
 	}
 	return tree
+}
+
+// Add 添加
+func (this MaterialType) Add() (int64, error) {
+	id, err := this.TableObject().Insert(this)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+// Update 更新给定的字段
+func (this MaterialType) Update(fields ...string) error {
+	m := make(map[string]interface{})
+	data := utils.StructToMap(m)
+	for _, field := range fields {
+		m[field] = data[field]
+	}
+	_, err := this.TableObject().Where("id=?", this.Id).Update(m)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Delete 删除
+func (this MaterialType) Delete() error {
+	_, err := this.TableObject().Where("id=?", this.Id).Delete(this)
+	if err != nil {
+		return err
+	}
+	return nil
 }
